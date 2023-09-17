@@ -9,5 +9,5 @@ class PlaybackTrack:
         self.icon_url = icon_url
     
     def __str__(self):
-        return f"{self.artist} - {self.name} ({self.album})"
+        return f"{self.artist} - {self.name}"
     

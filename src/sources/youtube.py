@@ -1,34 +1,24 @@
 from .common import StreamInterface
 from models import PlaybackTrack, Playlist
 
-import yt_dlp
+import youtube_search
 import asyncio
 
 class Youtube(StreamInterface):
     def __init__(self):
-        # limit to 10 results for now
-        self.ydl = yt_dlp.YoutubeDL({
-            "format": "bestaudio/best",
-            "quiet": True,
-            "no_warnings": True,
-            "nocheckcertificate": True,
-            "ignoreerrors": True,
-            "default_search": "ytsearch5",
-            "flat-playlist": True,
-        })
+        pass
 
     def search(self, query: str) -> Playlist:
-        results = self.ydl.extract_info(query, download=False)
+        results = youtube_search.YoutubeSearch(query, max_results=25).to_dict()
         playlist = Playlist()
-        for result in results["entries"]:
+        for result in results:
             track = PlaybackTrack(
                 id=result["id"],
                 name=result["title"],
-                url=result["webpage_url"],
-                artist=result["artist"] if "artist" in result else "",
-                album=result["album"] if "album" in result else "",
+                artist=result["channel"],
                 duration=result["duration"],
-                icon_url=result["thumbnail"] if "thumbnail" in result else ""
+                url=f"https://youtube.com{result['url_suffix']}",
+                icon_url=result["thumbnails"][0]
             )
             playlist.append(track)
         return playlist
