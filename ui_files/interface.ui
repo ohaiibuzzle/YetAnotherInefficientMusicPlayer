@@ -29,9 +29,15 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>40</width>
-            <height>40</height>
+            <width>160</width>
+            <height>90</height>
            </size>
+          </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
          </widget>
         </item>
@@ -77,13 +83,6 @@
         </item>
         <item>
          <widget class="QPushButton" name="nextButton">
-          <property name="text">
-           <string>prevButton</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="prevButton">
           <property name="text">
            <string>nextButton</string>
           </property>

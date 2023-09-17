@@ -1,5 +1,5 @@
 from ui_template.main_interface import Ui_MainWindow
-from PyQt6 import QtWidgets
+from PyQt6 import QtWidgets, QtGui, QtCore
 from asyncslot import asyncSlot
 
 from models import Playlist
@@ -27,8 +27,21 @@ class MainInterface(QtWidgets.QMainWindow, Ui_MainWindow):
         self.playButton.clicked.connect(self.play)
         self.nextButton.clicked.connect(self.skip)
 
+        self.addButton.setEnabled(False)
+        self.playButton.setEnabled(False)
+
     def update_song(self):
         self.songName.setText(self.playbackEngine.now_playing.__str__() if self.playbackEngine.now_playing else "Nothing playing")
+        asyncio.create_task(self.update_thumbnail())
+
+    async def update_thumbnail(self):
+        pic = QtGui.QPixmap()
+        thumb = await self.playbackEngine.now_playing.async_get_track_icon()
+        pic.loadFromData(thumb)
+        pic = pic.scaled(160, 90, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
+        self.songIconView.setScene(QtWidgets.QGraphicsScene())
+        self.songIconView.scene().addPixmap(pic)
+
 
     async def search(self):
         query = self.searchBox.text()
@@ -36,6 +49,8 @@ class MainInterface(QtWidgets.QMainWindow, Ui_MainWindow):
         results = await Youtube().async_search(query)
         for result in results:
             self.searchModel.append(result)
+        self.addButton.setEnabled(True)
+        self.playButton.setEnabled(True)
 
     def add_to_queue(self):
         track = self.searchModel[self.searchListView.currentIndex().row()]

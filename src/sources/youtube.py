@@ -9,7 +9,7 @@ class Youtube(StreamInterface):
         pass
 
     def search(self, query: str) -> Playlist:
-        results = youtube_search.YoutubeSearch(query, max_results=25).to_dict()
+        results = youtube_search.YoutubeSearch(query, max_results=25, region="US").to_dict()
         playlist = Playlist()
         for result in results:
             track = PlaybackTrack(

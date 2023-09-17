@@ -16,6 +16,7 @@ class PlaybackEngine:
             osc=True, 
             idle=True, 
             log_handler=print,
+            video=False,
             wid=str(int(wid)) if wid else None
         )
 
