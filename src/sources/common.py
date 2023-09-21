@@ -1,5 +1,6 @@
 from models import PlaybackTrack, Playlist
 
+
 class StreamInterface:
     """
     Base class for a streaming interface

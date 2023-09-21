@@ -4,6 +4,7 @@ from models import PlaybackTrack, Playlist
 import youtube_search
 import asyncio
 
+
 class Youtube(StreamInterface):
     def __init__(self):
         pass
@@ -18,10 +19,12 @@ class Youtube(StreamInterface):
                 artist=result["channel"],
                 duration=result["duration"],
                 url=f"https://youtube.com{result['url_suffix']}",
-                icon_url=result["thumbnails"][0]
+                icon_url=result["thumbnails"][0],
             )
             playlist.append(track)
         return playlist
-    
+
     async def async_search(self, query: str) -> Playlist:
-        return await asyncio.get_event_loop().run_in_executor(None, lambda: self.search(query))
+        return await asyncio.get_event_loop().run_in_executor(
+            None, lambda: self.search(query)
+        )
