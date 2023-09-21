@@ -72,7 +72,7 @@ class MainInterface(QtWidgets.QMainWindow, Ui_YetAnotherTerribleWindow):
 
     def add_to_queue(self):
         track = self.searchModel[self.searchListView.currentIndex().row()]
-        self.playbackEngine.add_to_queue(track)
+        asyncio.create_task(self.playbackEngine.add_to_queue(track))
 
     def play(self):
         self.playbackEngine.resume()

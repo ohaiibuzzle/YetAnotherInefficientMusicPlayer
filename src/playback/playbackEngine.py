@@ -35,26 +35,33 @@ class PlaybackEngine:
         return PlaybackEngine.instance
 
     async def begin_playback(self):
+        next_track = asyncio.Event()
+        started_playing = asyncio.Event()
+        def wait_until_playing():
+            self.mpv.wait_until_playing()
+            started_playing.set()
+
+        def wait_for_next_track():
+            self.mpv.wait_for_playback()
+            next_track.set()
+
         while self.playlist.__len__() > 0:
             self.now_playing = self.playlist[0]
             self.playlist.remove(self.now_playing)
-            self.next_track.clear()
+            next_track.clear()
             
             if self.next_track_callback:
                 self.next_track_callback()
             self.mpv.play(self.now_playing.url)
-            self.mpv.wait_until_playing()
+            Thread(target=wait_until_playing).start()
+            await started_playing.wait()
             
             Thread(target=self.update_playback).start()
-            Thread(target=self.wait_for_next_track).start()
+            Thread(target=wait_for_next_track).start()
 
-            await self.next_track.wait()
+            await next_track.wait()
         else:
             self.now_playing = None
-
-    def wait_for_next_track(self):
-        self.mpv.wait_for_playback()
-        self.next_track.set()
 
     def update_playback(self):
         current_song = self.now_playing
@@ -64,7 +71,7 @@ class PlaybackEngine:
             self._now_playing_time += 1
             time.sleep(1)
 
-    def add_to_queue(self, track: PlaybackTrack):
+    async def add_to_queue(self, track: PlaybackTrack):
         self.playlist.append(track)
         if len(self.playlist) == 1 and not self.now_playing:
             asyncio.create_task(self.begin_playback())
