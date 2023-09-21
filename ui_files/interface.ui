@@ -220,18 +220,20 @@
        <item>
         <layout class="QHBoxLayout" name="playlistsView">
          <item>
-          <layout class="QVBoxLayout" name="playlistLayout">
-           <item>
-            <widget class="QLabel" name="playlistLabel">
-             <property name="text">
-              <string>Up Next</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QListView" name="playlistView"/>
-           </item>
-          </layout>
+          <widget class="QWidget" name="playlistLayout" native="true">
+           <layout class="QVBoxLayout" name="playlistLayout_2">
+            <item>
+             <widget class="QLabel" name="playlistLabel">
+              <property name="text">
+               <string>Up Next</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QListView" name="playlistView"/>
+            </item>
+           </layout>
+          </widget>
          </item>
          <item>
           <layout class="QVBoxLayout" name="control_buttons">
@@ -284,18 +286,20 @@
           </layout>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="searchLayout">
-           <item>
-            <widget class="QLabel" name="searchLabel">
-             <property name="text">
-              <string>Search Results</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QListView" name="searchListView"/>
-           </item>
-          </layout>
+          <widget class="QWidget" name="searchLayout" native="true">
+           <layout class="QVBoxLayout" name="searchLayout_2">
+            <item>
+             <widget class="QLabel" name="searchLabel">
+              <property name="text">
+               <string>Search Results</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QListView" name="searchListView"/>
+            </item>
+           </layout>
+          </widget>
          </item>
         </layout>
        </item>

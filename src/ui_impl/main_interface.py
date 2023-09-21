@@ -26,6 +26,7 @@ class MainInterface(QtWidgets.QMainWindow, Ui_YetAnotherTerribleWindow):
         self.searchBox.returnPressed.connect(asyncSlot(self.search))
 
         self.addButton.clicked.connect(self.add_to_queue)
+        self.removeButton.clicked.connect(self.remove_from_queue)
         self.playButton.clicked.connect(self.play)
         self.nextButton.clicked.connect(self.skip)
 
@@ -43,6 +44,12 @@ class MainInterface(QtWidgets.QMainWindow, Ui_YetAnotherTerribleWindow):
         self.timeTotalLabel.setText(self.playbackEngine.human_readable_playback_duration)
         self.play()
         asyncio.create_task(self.update_thumbnail())
+
+        # Extras:
+        # if the search box is not highlighted, hide the search results panel
+        if not self.searchBox.hasFocus() and self.playbackEngine.playlist.__len__() > 0:
+            self.searchLayout.setVisible(False)
+
 
     async def update_thumbnail(self):
         pic = QtGui.QPixmap()
@@ -62,6 +69,8 @@ class MainInterface(QtWidgets.QMainWindow, Ui_YetAnotherTerribleWindow):
         self.playbackEngine.playback_time = value
 
     async def search(self):
+        self.searchLayout.setVisible(True)
+
         query = self.searchBox.text()
         self.searchModel.clear()
         results = await Youtube().async_search(query)
@@ -71,8 +80,18 @@ class MainInterface(QtWidgets.QMainWindow, Ui_YetAnotherTerribleWindow):
         self.playButton.setEnabled(True)
 
     def add_to_queue(self):
-        track = self.searchModel[self.searchListView.currentIndex().row()]
+        try:
+            track = self.searchModel[self.searchListView.currentIndex().row()]
+        except IndexError:
+            return
         asyncio.create_task(self.playbackEngine.add_to_queue(track))
+
+    def remove_from_queue(self):
+        try:
+            track = self.playbackEngine.playlist[self.playlistView.currentIndex().row()]
+        except IndexError:
+            return
+        self.playbackEngine.playlist.remove(track)
 
     def play(self):
         self.playbackEngine.resume()

@@ -39,6 +39,7 @@ class PlaybackEngine:
         started_playing = asyncio.Event()
         def wait_until_playing():
             self.mpv.wait_until_playing()
+            Thread(target=self.update_playback).start()
             started_playing.set()
 
         def wait_for_next_track():
@@ -56,9 +57,7 @@ class PlaybackEngine:
             Thread(target=wait_until_playing).start()
             await started_playing.wait()
             
-            Thread(target=self.update_playback).start()
             Thread(target=wait_for_next_track).start()
-
             await next_track.wait()
         else:
             self.now_playing = None
